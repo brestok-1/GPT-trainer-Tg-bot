@@ -1,0 +1,25 @@
+version: '3.10'
+services:
+  db:
+    image: postgres:15
+    env_file:
+      - .env
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  bot:
+    build: .
+    command: sh -c "watchfiles --filter python 'python -m bot'"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - .:/gpt-tg-bot
+    restart: always
+
+
+volumes:
+  postgres_data:
